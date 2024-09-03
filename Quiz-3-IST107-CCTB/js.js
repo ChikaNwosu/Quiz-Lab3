@@ -28,7 +28,7 @@ etc.
 
 (2) Strategy of makeComputerMove()
 
-The computer first  looks for almost completed rows, columns, and
+The computer first looks for almost completed rows, columns, and
 diagonals, where there are two fields occupied either by the human
 player or by the computer itself. If the computer can win by
 completing a sequence, it does so; if it can block the player from
@@ -44,21 +44,19 @@ gameplay experience is fairly decent.
 //==================================
 
 // Bind Esc key to closing the modal dialog
-document.onkeypress = function (evt) {
-    evt = evt || window.event;
-    var modal = document.getElementsByClassName("modal")[0];
-    if (evt.keyCode === 27) {
+document.addEventListener('keypress', function (evt) {
+    const modal = document.querySelector(".modal");
+    if (evt.keyCode === 27) { // Esc key
         modal.style.display = "none";
     }
-};
+});
 
-// When the user clicks anywhere outside of the modal dialog, close it
-window.onclick = function (evt) {
-    var modal = document.getElementsByClassName("modal")[0];
+window.addEventListener('click', function (evt) {
+    const modal = document.querySelector(".modal");
     if (evt.target === modal) {
         modal.style.display = "none";
     }
-};
+});
 
 //==================================
 // HELPER FUNCTIONS
@@ -99,25 +97,14 @@ function intRandom(min, max) {
 }
 
 // GLOBAL VARIABLES
-var moves = 0,
-    winner = 0,
-    x = 1,
-    o = 3,
-    player = x,
-    computer = o,
-    whoseTurn = x,
-    gameOver = false,
-    score = {
-        ties: 0,
-        player: 0,
-        computer: 0
-    },
-    xText = "<span class=\"x\">&times;</class>",
-    oText = "<span class=\"o\">o</class>",
-    playerText = xText,
-    computerText = oText,
-    difficulty = 1,
-    myGrid = null;
+const x = 1, o = 3;
+let moves = 0, winner = 0, player = x, computer = o;
+let whoseTurn = x, gameOver = false;
+let score = { ties: 0, player: 0, computer: 0 };
+const xText = "<span class=\"x\">&times;</span>", oText = "<span class=\"o\">o</span>";
+let playerText = xText, computerText = oText, difficulty = 1;
+let myGrid = null;
+
 
 //==================================
 // GRID OBJECT
@@ -125,8 +112,12 @@ var moves = 0,
 
 // Grid constructor
 //=================
-function Grid() {
-    this.cells = new Array(9);
+class Grid {
+    constructor() {
+        this.cells = Array(9).fill(0);
+    }
+
+    // Methods for Grid class...
 }
 
 // Grid methods
@@ -287,9 +278,8 @@ function initialize() {
     for (var i = 0; i <= myGrid.cells.length - 1; i++) {
         myGrid.cells[i] = 0;
     }
-    // setTimeout(assignRoles, 500);
-    setInterval(showOptions, 500);
-    // debugger;
+    // Change this line to use setTimeout instead of setInterval
+    setTimeout(showOptions, 500); // Show options popup only once after 500ms
 }
 
 // Ask player if they want to play as X or O. X goes first.
@@ -374,7 +364,6 @@ function restartGame(ask) {
         document.getElementById(id).classList.remove("win-color");
     }
     if (ask === true) {
-        // setTimeout(assignRoles, 200);
         setTimeout(showOptions, 200);
     } else if (whoseTurn == computer) {
         setTimeout(makeComputerMove, 800);
@@ -383,7 +372,6 @@ function restartGame(ask) {
 
 // The core logic of the game AI:
 function makeComputerMove() {
-    // debugger;
     if (gameOver) {
         return false;
     }
@@ -466,7 +454,6 @@ function makeComputerMove() {
         }
     }
     var id = "cell" + cell.toString();
-    // console.log("computer chooses " + id);
     document.getElementById(id).innerHTML = computerText;
     document.getElementById(id).style.cursor = "default";
     // randomize rotation of marks on the board to make them look
@@ -498,11 +485,9 @@ function checkWin() {
             if (row[0] == computer) {
                 score.computer++;
                 winner = computer;
-                // console.log("computer wins");
             } else {
                 score.player++;
                 winner = player;
-                // console.log("player wins");
             }
             // Give the winning row/column/diagonal a different bg-color
             var tmpAr = myGrid.getRowIndices(i);
@@ -522,11 +507,9 @@ function checkWin() {
             if (col[0] == computer) {
                 score.computer++;
                 winner = computer;
-                // console.log("computer wins");
             } else {
                 score.player++;
                 winner = player;
-                // console.log("player wins");
             }
             // Give the winning row/column/diagonal a different bg-color
             var tmpAr = myGrid.getColumnIndices(i);
@@ -546,11 +529,9 @@ function checkWin() {
             if (diagonal[0] == computer) {
                 score.computer++;
                 winner = computer;
-                // console.log("computer wins");
             } else {
                 score.player++;
                 winner = player;
-                // console.log("player wins");
             }
             // Give the winning row/column/diagonal a different bg-color
             var tmpAr = myGrid.getDiagIndices(i);
@@ -612,7 +593,6 @@ function getOptions() {
         if (diffs[i].checked) {
             difficulty = parseInt(diffs[i].value);
             break;
-            // debugger;
         }
     }
     if (document.getElementById('rx').checked === true) {
@@ -639,7 +619,7 @@ function closeModal(id) {
 
 function endGame(who) {
     if (who == player) {
-        announceWinner("Congratulations, [Your name] won!");
+        announceWinner("Congratulations, [Chika] won!");
     } else if (who == computer) {
         announceWinner("Computer wins!");
     } else {
@@ -659,3 +639,15 @@ function endGame(who) {
     setTimeout(restartGame, 800);
 }
 
+// Adding color transition effect
+function changeBackgroundColor() {
+    const colors = ['rgba(244, 241, 241, 0.889)', 'rgba(200, 200, 255, 0.889)', 'rgba(220, 220, 220, 0.9)', 'rgba(180, 240, 240, 0.9)', 'rgba(255, 200, 200, 0.889)'];
+    let currentColorIndex = 0;
+
+    setInterval(() => {
+        currentColorIndex = (currentColorIndex + 1) % colors.length;
+        document.body.style.backgroundColor = colors[currentColorIndex];
+    }, 5000); // Change color every 5 seconds
+}
+
+changeBackgroundColor();
